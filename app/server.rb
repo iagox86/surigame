@@ -60,7 +60,7 @@ end
 get '/' do
   erb(
     :index,
-    :locals => {
+    locals: {
       levels: unlocked_levels
     }
   )
@@ -73,7 +73,7 @@ get '/level/:id' do
 
   erb(
     :"levels/#{ level['type'] }",
-    :locals => {
+    locals: {
       levels: unlocked_levels,
       level: level,
     }
@@ -97,7 +97,7 @@ before do
     # Handle JSON parsing errors
     LOGGER.error("JSON parsing error: #{ e.message }")
 
-    halt(400, { error: "JSON parsing error!" }.to_json)
+    halt(400, { error: 'JSON parsing error!' }.to_json)
   rescue StandardError => e
     # Handle any other unexpected errors
     LOGGER.error("Unexpected error: #{ e.message }")
@@ -109,11 +109,11 @@ end
 get '/api/levels/:id' do
   level = get_level(@params[:id])
 
-  if level
-    return 200, level.to_json
-  else
+  unless level
     return 400, { 'error' => 'No such level!' }.to_json
   end
+
+  return 200, level.to_json
 end
 
 post '/api/exploit/:id' do
@@ -143,7 +143,7 @@ post '/api/exploit/:id' do
     return 500, { 'error' => 'Request to target server timed out! This is probably an infrastructure problem...' }.to_json
   rescue ::Errno::ECONNREFUSED => e
     LOGGER.error("Connection refused: #{ e }")
-    return 500, { 'error' => "Connection refused to target server! This is probably an infrastructure problem..." }.to_json
+    return 500, { 'error' => 'Connection refused to target server! This is probably an infrastructure problem...' }.to_json
   rescue ::StandardError => e
     LOGGER.error("Error running exploit (#{ e.class }): #{ e }")
     return 500, { 'error' => "Error running exploit: #{ e }" }.to_json
