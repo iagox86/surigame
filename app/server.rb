@@ -224,17 +224,17 @@ post '/api/suricata/:id' do
 
         # Only do this once
         if results.empty?
-          results.concat((evil_test[:errors] || []).map { |e| { 'type' => 'error', 'message' => "Suricata says: #{ e }" } })
+          results.concat((evil_test[:errors] || []).map { |e| { 'type' => 'error', 'message' => "ERROR: Suricata says: #{ e }" } })
           unless results.empty?
             good = false
           end
         end
 
         if evil_test[:results].empty?
-          results << { 'type' => 'miss', 'message' => 'Rule(s) missed an evil payload!', id: evil_request['id'] }
+          results << { 'type' => 'miss', 'message' => 'BAD: Rule(s) missed an evil payload!', id: evil_request['id'] }
           good = false
         else
-          results << { 'type' => 'success', 'message' => 'Rule matched an evil payload!', id: evil_request['id'] }
+          results << { 'type' => 'success', 'message' => 'GOOD: Rule matched an evil payload!', id: evil_request['id'] }
         end
       end
 
@@ -244,13 +244,13 @@ post '/api/suricata/:id' do
         innocent_test = does_request_match(innocent_request['request'], @body['rule'].split(/\r?\n/))
 
         unless innocent_test[:results].empty?
-          results << { 'type' => 'overmatch', 'message' => 'Rule matched a good payload!!', id: innocent_request['id'] }
+          results << { 'type' => 'overmatch', 'message' => 'BAD: Rule matched an innocent payload!!', id: innocent_request['id'] }
         end
       end
 
       return 200, {
         'completed' => results.all? { |r| r['type'] == 'success' },
-        'result' => results,
+        'results' => results,
       }.to_json
     end
   rescue ::Timeout::Error

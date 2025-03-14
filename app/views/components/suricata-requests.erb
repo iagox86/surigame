@@ -1,0 +1,15 @@
+<h2>Evil request(s)</h2>
+
+<p>Your goal is to block all of these request:</p>
+
+<% for evil_request in level['evil_requests'] %>
+  <pre class="code" id="request-<%= evil_request['id'] %>" style="min-height: 0px"><%= evil_request['request'] %></pre>
+<% end %>
+
+<h2>Innocent request(s)</h2>
+
+<p>You  must NOT block these requests:</p>
+
+<% for innocent_request in level['innocent_requests'] %>
+  <pre class="code" id="request-<%= innocent_request['id'] %>" style="min-height: 0px"><%= innocent_request['request'] %></pre>
+<% end %>

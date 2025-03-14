@@ -67,16 +67,12 @@ body {
   padding-top: 20px; /* Optional padding */
 }
 
-#exploit {
-  padding: 10px;
-}
-
-#exploit .button-group {
+.button-group {
   text-align: left;
   margin-top: 10px;
 }
 
-#exploit textarea::placeholder {
+textarea::placeholder {
   color: #aaa; /* Lighter placeholder color */
   font-style: italic; /* Italic font for placeholder */
 }
@@ -191,3 +187,91 @@ body {
   overflow-wrap: break-word; /* For long words */
 }
 
+#results {
+  margin-top: 10px;
+}
+
+.status {
+  width: 100%; /* Full width */
+  padding: 20px 40px 20px 20px; /* Adjust padding for icon space */
+  text-align: left; /* Align text to the left */
+  border: 1px solid #666; /* Default border for dark mode */
+  position: relative; /* Enable relative positioning */
+  background-color: #333; /* Dark background */
+  margin: 20px;
+  cursor: pointer;
+}
+
+/* Success styling */
+.success {
+  background-color: #2F4F4F; /* Dark greenish background */
+  border-color: #3E8E41; /* Green border */
+  color: #C6F4D6; /* Light green text */
+}
+
+/* Warning styling */
+.miss {
+  background-color: #663300; /* Dark brownish background */
+  border-color: #FF9900; /* Orange border */
+  color: #F7D2C4; /* Light orange text */
+}
+
+/* Warning styling */
+.overmatch {
+  background-color: #663300; /* Dark brownish background */
+  border-color: #FF9900; /* Orange border */
+  color: #F7D2C4; /* Light orange text */
+}
+
+/* Failure styling */
+.error {
+  background-color: #660033; /* Dark reddish background */
+  border-color: #E74C3C; /* Red border */
+  color: #F2C6C6; /* Light red text */
+}
+
+.status-icon {
+  position: absolute; /* Position icon absolutely */
+  right: 20px; /* Pin icon to the right */
+  top: 50%; /* Center icon vertically */
+  transform: translateY(-50%); /* Fine-tune vertical centering */
+  font-size: 24px; /* Increase icon size */
+}
+
+.highlight {
+  background-color: #66CCFF;
+}
+
+#loadingIndicator {
+  display: inline-block; /* Display inline */
+}
+
+.spinner-border {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  vertical-align: text-bottom;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  -webkit-animation: spinner-border .75s linear infinite;
+  animation: spinner-border .75s linear infinite;
+}
+
+@keyframes spinner-border {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}

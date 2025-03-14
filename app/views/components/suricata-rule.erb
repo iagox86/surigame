@@ -1,0 +1,14 @@
+<h2>Rule</h2>
+<p>Edit/type your Suricata rule(s) below (one/line)</p>
+
+<textarea id="rule" class="code" spellcheck="false" placeholder="Put your Suricata rule here (click 'Reset' to go back to the original)"><%= level['base_rule'] %></textarea>
+<div class="button-group">
+  <button id="send" class="btn btn-sm btn-primary">Test rule</button>
+  <button id="reset" class="btn btn-sm btn-secondary">Reset</button>
+
+  <div id="loadingIndicator" style="display: none">
+    <div class="spinner-border spinner-border-sm text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+</div>
