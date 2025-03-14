@@ -8,10 +8,14 @@ const highlight_completed_levels = () => {
   }
 };
 
-const complete_level = (id) => {
+const complete_level = (id, name) => {
   let progress = JSON.parse(localStorage.getItem('progress') || '{}');
   progress[id] = true;
   localStorage.setItem('progress', JSON.stringify(progress));
+
+  if(name) {
+    toastr.success(`Completed level: ${ name }`);
+  }
   highlight_completed_levels();
 };
 
@@ -23,7 +27,8 @@ $(document).ready(() => {
       level = data;
     })
     .fail((xhr, status, error) => {
-      console.log('Error: ' + error); // Handle any errors here
+      console.error(`Error: ${ error }`);
+      toastr.error(`Error: ${ error }`);
     });
 
   // Highlight completed levels
