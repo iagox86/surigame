@@ -178,7 +178,7 @@ end
 def does_request_match(request, rules)
   # Don't bother with empty rulesets
   if rules == []
-    return []
+    return {}
   end
 
   Tempfile.create('request.pcap') do |pcap_file|
@@ -203,9 +203,9 @@ post '/api/exploit/:id' do
 
   # If there are Suricata rules, do that first
   matches = does_request_match(request, level['rules'] || [])
-  unless matches[:errors].empty? # TODO Test this
+  unless matches[:errors].nil? || matches[:errors].empty?
     LOGGER.error(matches[:errors])
-    return 500, { 'error' => 'One of our Suricata rules caused an error! This is probably a game problem...' }
+    return 500, { 'error' => 'One of our Suricata rules caused an error! This is probably a game problem...' }.to_json
   end
 
   caught = does_request_match(request, level['rules'] || [])[:results]&.map do |result|
@@ -213,7 +213,7 @@ post '/api/exploit/:id' do
   end
   pp caught
 
-  if caught.length > 0
+  unless caught.nil? || caught.empty?
     return 200, {
       'response' => ::Base64.strict_encode64('Caught by a Suricata rule!'),
       'caught' => caught,
