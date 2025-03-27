@@ -1,6 +1,7 @@
 require 'base64'
 require 'json'
 require 'pathname'
+require 'set'
 require 'sinatra'
 require 'singlogger'
 require 'socket'
@@ -54,9 +55,14 @@ unless File.executable?(SURICATA)
 end
 
 # Load the levels from the levels/ directory
+LEVEL_IDS = ::Set.new()
 LEVELS = ::Dir.glob(::File.join(__dir__, 'levels', '**', 'config.yaml')).sort.map do |config|
   # Add the id (based on the filename) to each config file
-  { 'id' => ::Pathname.new(config).parent.basename.to_s }.merge(::YAML.load_file(config))
+  id = ::Pathname.new(config).parent.basename.to_s
+  unless LEVEL_IDS.add?(id)
+    raise "Duplicate ID: #{ id }"
+  end
+  { 'id' => id }.merge(::YAML.load_file(config))
 end.map do |level|
   # Give the Suricata rules a consistent ID
   level['rules'] = level['rules']&.each_with_index&.map do |rule, i|
