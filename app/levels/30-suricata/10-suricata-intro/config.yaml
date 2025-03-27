@@ -17,17 +17,14 @@ base_rule: |-
   alert http any any -> any any (msg:"Gotcha!"; flow:to_server,established; http.method; content:"GET"; http.uri; content:"/put/the/content/here"; sid:1030004; rev:1;)
 
 evil_requests:
-  - id: backdoor
-    request: |-
+  - request: |-
       GET /backdoor.php HTTP/1.0
       Connection: close
 
 innocent_requests:
-  - id: goodpage
-    request: |-
+  - request: |-
       GET /goodpage.php HTTP/1.0
       Connection: close
-  - id: rooturl
-    request: |-
+  - request: |-
       GET / HTTP/1.0
       Connection: close

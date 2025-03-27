@@ -63,3 +63,6 @@ Metrics/ParameterLists:
 
 Style/WhileUntilModifier:
   Enabled: false
+
+Style/MultilineBlockChain:
+  Enabled: false

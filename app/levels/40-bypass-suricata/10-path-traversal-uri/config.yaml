@@ -1,0 +1,29 @@
+name: 'Path Traversal Bypass'
+type: exploit
+divider_before: 'Suricata Bypass'
+
+text: |-
+  Let's learn how to exploit a path traversal vulnerability!
+
+  This is placeholder and will be more
+
+  To finish this level, fetch /etc/passwd
+
+hints:
+- ".."
+- "/../../../"
+
+rules:
+- 'alert http any any -> any any (msg:"%%ID%%"; flow:to_server,established; http.method; content:"GET"; http.uri.raw; content:".."; sid:1030005; rev:1;)'
+
+target:
+  dev:
+    host: 127.0.0.1
+    port: 4000
+  prod: {}
+
+base_request: |-
+  GET / HTTP/1.0
+  Connection: close
+
+expected_output: "root.*0:0"

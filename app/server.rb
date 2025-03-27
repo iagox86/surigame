@@ -55,10 +55,25 @@ end
 
 # Load the levels from the levels/ directory
 LEVELS = ::Dir.glob(::File.join(__dir__, 'levels', '**', 'config.yaml')).sort.map do |config|
-  {
-    # Add the id (based on the filename) to each config file
-    'id' => ::Pathname.new(config).parent.basename.to_s,
-  }.merge(::YAML.load_file(config))
+  # Add the id (based on the filename) to each config file
+  { 'id' => ::Pathname.new(config).parent.basename.to_s }.merge(::YAML.load_file(config))
+end.map do |level|
+  # Give the Suricata rules a consistent ID
+  level['rules'] = level['rules']&.each_with_index&.map do |rule, i|
+    rule.gsub('%%ID%%', "#{ level['id'] }-#{ i + 1 }")
+  end
+
+  level['evil_requests'] = level['evil_requests']&.each_with_index&.map do |request, i|
+    request['id'] = "#{ level['id'] }-evil-#{ i + 1 }"
+    request
+  end
+
+  level['innocent_requests'] = level['innocent_requests']&.each_with_index&.map do |request, i|
+    request['id'] = "#{ level['id'] }-innocent-#{ i + 1 }"
+    request
+  end
+
+  level
 end
 
 # Add the next/previous levels
@@ -160,6 +175,19 @@ get '/api/levels/:id' do
   return 200, level.to_json
 end
 
+def does_request_match(request, rules)
+  # Don't bother with empty rulesets
+  if rules == []
+    return []
+  end
+
+  Tempfile.create('request.pcap') do |pcap_file|
+    pcap_file.write(FakeCap.fake_http(request))
+    pcap_file.close
+    return run_suricata(pcap_file.to_path, rules, suricata: SURICATA)
+  end
+end
+
 post '/api/exploit/:id' do
   if @body['request'].nil? || @body['request'].empty?
     return 400, { 'error' => 'Missing request!' }.to_json
@@ -170,7 +198,28 @@ post '/api/exploit/:id' do
     return 400, { 'error' => 'Invalid level!' }.to_json
   end
 
+  # Clean up the request (newlines, etc)
   request = format_http(@body['request'])
+
+  # If there are Suricata rules, do that first
+  matches = does_request_match(request, level['rules'] || [])
+  unless matches[:errors].empty? # TODO Test this
+    LOGGER.error(matches[:errors])
+    return 500, { 'error' => 'One of our Suricata rules caused an error! This is probably a game problem...' }
+  end
+
+  caught = does_request_match(request, level['rules'] || [])[:results]&.map do |result|
+    result.dig('alert', 'signature') || 'unknown-rule'
+  end
+  pp caught
+
+  if caught.length > 0
+    return 200, {
+      'response' => ::Base64.strict_encode64('Caught by a Suricata rule!'),
+      'caught' => caught,
+      'completed' => false,
+    }.to_json
+  end
 
   begin
     ::Timeout.timeout(10) do
@@ -180,6 +229,7 @@ post '/api/exploit/:id' do
 
       return 200, {
         'response' => ::Base64.strict_encode64(response),
+        'caught' => nil,
         'completed' => !(response =~ ::Regexp.new(level['expected_output'])).nil?,
       }.to_json
     end
@@ -193,14 +243,6 @@ post '/api/exploit/:id' do
     LOGGER.error("Error running exploit (#{ e.class }): #{ e }")
     puts e.backtrace
     return 500, { 'error' => "Error running exploit: #{ e }" }.to_json
-  end
-end
-
-def does_request_match(request, rules)
-  Tempfile.create('request.pcap') do |pcap_file|
-    pcap_file.write(FakeCap.fake_http(request))
-    pcap_file.close
-    return run_suricata(pcap_file.to_path, rules, suricata: SURICATA)
   end
 end
 
