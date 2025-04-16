@@ -25,7 +25,7 @@ function validateIP() {
     <h1>🛡️ Dragon Detector 🐉</h1>
     <p class="subtitle">Enter an IP address to see if a dragon lives there!</p>
     <p>This uses state of the art copyrighted AI, and it's worth A LOT of money!!</p>
-    <form id="dragon-form" action="detect-dragon.php" onsubmit="return validateIP();">
+    <form id="dragon-form" action="detect-dragon.php" method="POST" onsubmit="return validateIP();">
       <input type="text" id="dragon-ip" name="ip" placeholder="Enter IP address..." required>
       <button type="submit">Detect Dragon</button>
     </form>

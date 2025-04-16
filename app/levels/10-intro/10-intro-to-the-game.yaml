@@ -1,5 +1,5 @@
 name: 'Introduction'
-type: text
+type: 'text'
 
 text: |-
   Welcome to the Suricata Workshop!

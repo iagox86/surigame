@@ -1,26 +1,18 @@
-# Simple path tarversal
+Exploit levels (port = `1000n`):
 
+1. `detector` (shell injection)
+2. `pathing` (path traversal URI)
+3. `extinction` (default login)
+4. `sighting` (path traversal args)
+5. `hidden-reports` (sqli)
+6. `taxonomy` (SQLi search)
+7. `hoard` (shell injection JSON)
+8. `evidence` (XXE)
 
-* `pathing` (port 10001)
-  * Path traversal in URI
+Suricata rule dev levels:
 
-* `sighting` (port 10002)
-  * Path traversal in GET/POST arg
+* TODO
 
-* `hidden-reports` (port 10003)
-  * SQLi on login form
+Suricata bypass levels:
 
-* `taxonomy` (port 10004)
-  * SQLi on search results
-
-* `detector` (port 10005)
-  * Shell command injection (in POST args)
-
-* `hoard` (port 10006)
-  * Shell command injection (in JSON)
-
-* `extinction` (port 10007)
-  * Default login
-
-* `evidence` (port 10008)
-  * XXE
+* TODO

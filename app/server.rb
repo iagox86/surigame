@@ -57,12 +57,15 @@ end
 
 # Load the levels from the levels/ directory
 LEVEL_IDS = ::Set.new()
-LEVELS = ::Dir.glob(::File.join(__dir__, 'levels', '**', 'config.yaml')).sort.map do |config|
+LEVELS = ::Dir.glob(::File.join(__dir__, 'levels', '**', '*.yaml')).sort.map do |config|
+  LOGGER.info "Loading #{ config }..."
   # Add the id (based on the filename) to each config file
-  id = ::Pathname.new(config).parent.basename.to_s
+  id = ::Pathname.new(config).basename('.yaml').to_s
+
   unless LEVEL_IDS.add?(id)
     raise "Duplicate ID: #{ id }"
   end
+
   { 'id' => id }.merge(::YAML.load_file(config))
 end.map do |level|
   # Give the Suricata rules a consistent ID
@@ -110,12 +113,26 @@ def md(text)
 end
 
 def format_http(http)
-  http = http.gsub(/\r?\n/, "\r\n")
-  until http.include?("\r\n\r\n")
-    http.concat("\r\n")
+  headers, body = http.split(/\r?\n\r?\n/, 2)
+
+  # Connection: close is mandatory
+  if headers =~ /^Connection:/i
+    headers = headers.gsub(/^Connection.*/i, 'Connection: close')
+  else
+    headers.concat("\r\nConnection: close")
   end
 
-  return http
+  # Host: is also mandatory
+  unless headers =~ /^Host:/i
+    headers.concat("\r\nHost: localhost")
+  end
+
+  # Make sure they don't mess up content-length
+  if headers =~ /^Content-Length:/i
+    headers = headers.gsub(/^Content-Length.*/i, "Content-Length: #{ (body || '').length }")
+  end
+
+  return [headers, body || ''].join("\r\n\r\n")
 end
 
 get '/' do
@@ -211,7 +228,10 @@ post '/api/exploit/:id' do
   end
 
   # Clean up the request (newlines, etc)
-  request = format_http(@body['request'])
+  pp @body
+  unless @body['dont-fix']
+    request = format_http(@body['request'])
+  end
 
   # If there are Suricata rules, do that first
   matches = does_request_match(request, level['rules']&.map { |rule| rule['rule'] } || [])
@@ -226,19 +246,24 @@ post '/api/exploit/:id' do
 
   unless caught.nil? || caught.empty?
     return 200, {
+      'fixed_request' => ::Base64.strict_encode64(request),
       'response' => ::Base64.strict_encode64('Caught by a Suricata rule!'),
       'caught' => caught || [],
       'completed' => false,
     }.to_json
   end
 
+  # Define the socket so we can ensure it's closed
   begin
+    s = nil
     ::Timeout.timeout(10) do
+      LOGGER.info("Connecting to #{ level['target'][PROFILE]['host'] }:#{ level['target'][PROFILE]['port'] }")
       s = TCPSocket.new(level['target'][PROFILE]['host'], level['target'][PROFILE]['port'])
       s.write(request)
       response = s.read()
 
       return 200, {
+        'fixed_request' => ::Base64.strict_encode64(request),
         'response' => ::Base64.strict_encode64(response),
         'caught' => [],
         'completed' => !(response =~ ::Regexp.new(level['expected_output'])).nil?,
@@ -246,7 +271,11 @@ post '/api/exploit/:id' do
     end
   rescue ::Timeout::Error
     LOGGER.warn('Timeout!')
-    return 500, { 'error' => 'Request to target server timed out! This is probably an infrastructure problem...' }.to_json
+    if @body['dont-fix']
+      return 500, { 'error' => "Request to target server timed out! You might consider unchecking 'don't fix my HTTP request' (or fixing Connection/Host/Content-Length headers manually)..." }.to_json
+    end
+
+    return 500, { 'error' => 'Request to target server timed out! This is probably an infrastructure problem, or some header is causing the server to wait...' }.to_json
   rescue ::Errno::ECONNREFUSED => e
     LOGGER.error("Connection refused: #{ e }")
     return 500, { 'error' => 'Connection refused to target server! This is probably an infrastructure problem...' }.to_json
@@ -254,6 +283,8 @@ post '/api/exploit/:id' do
     LOGGER.error("Error running exploit (#{ e.class }): #{ e }")
     puts e.backtrace
     return 500, { 'error' => "Error running exploit: #{ e }" }.to_json
+  ensure
+    s&.close
   end
 end
 

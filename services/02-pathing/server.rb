@@ -4,7 +4,7 @@ require 'webrick'
 require 'cgi'
 require 'socket'
 
-server = ::TCPServer.new('0.0.0.0', 4000)
+server = ::TCPServer.new('0.0.0.0', 80)
 
 puts "Server ready: #{ server.inspect }"
 loop do
