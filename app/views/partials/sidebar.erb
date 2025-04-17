@@ -15,10 +15,13 @@
             ><h4><%= level['divider_before'] %></h4></li>
           <% end %>
 
-          <li
-            style="display: <%= level['previous'] ? 'none' : 'block' %>"
-            class="sidebar-level-<%= level['id'] %>"
-          ><a href="/level/<%= level['id'] %>" id="<%= level['id'] %>"><%= level['name'] %></a> <div class="checkmark-container" id="completed-<%= level['id'] %>"><span class="checkmark">✓</span></div></li>
+          <li style="display: <%= level['previous'] ? 'none' : 'block' %>" class="sidebar-level-<%= level['id'] %>">
+            <a href="/level/<%= level['id'] %>" id="<%= level['id'] %>">
+              <%= level['name'] %>
+            </a>
+            <div class="checkmark-container" id="completed-<%= level['id'] %>"><span class="checkmark">✓</span></div>
+            <div class="skipped-container" id="skipped-<%= level['id'] %>"><span class="skipped">&ndash;</span></div>
+          </li>
         <% end %>
       </ul>
       <button id="clear" class="btn btn-sm btn-secondary">Clear</button>

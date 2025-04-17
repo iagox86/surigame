@@ -138,6 +138,21 @@ textarea::placeholder {
   overflow-wrap: break-word; /* For long words */
 }
 
+.skipped-container {
+  background-color: white; /* White background */
+  border-radius: 5px; /* Rounded corners */
+  padding: 2px; /* Padding inside the container */
+  margin: 3px;
+  border: 1px solid #FFBF00; /* Optional amber border for emphasis */
+  width: 20px; /* Fixed width to make it square */
+  height: 20px; /* Same as width to ensure it's square */
+  /*display: inline-flex; /* Ensures content is centered */
+  display: none;
+  justify-content: center; /* Center checkmark horizontally */
+  align-items: center; /* Center checkmark vertically */
+  user-select: none;
+}
+
 .checkmark-container {
   background-color: white; /* White background */
   border-radius: 5px; /* Rounded corners */
@@ -150,16 +165,24 @@ textarea::placeholder {
   display: none;
   justify-content: center; /* Center checkmark horizontally */
   align-items: center; /* Center checkmark vertically */
+  user-select: none;
 }
 
 .checkmark {
   font-size: 16px; /* Adjust size */
-  font-weight: bold; /* Make it bold */
+  font-weight: 1000; /* Make it bold */
   color: #008000; /* Green color */
+}
+
+.skipped {
+  font-size: 16px; /* Adjust size */
+  font-weight: 1000; /* Make it bold */
+  color: #CC8F00; /* Amber color */
 }
 
 .current-level {
   font-weight: bold;
+  color: #FFBF00 !important;
 }
 
 .rule {

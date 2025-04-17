@@ -1,9 +1,18 @@
 const highlight_completed_levels = () => {
-  let progress = JSON.parse(localStorage.getItem('completed-levels') || '{}');
+  let visible = JSON.parse(localStorage.getItem('visible-levels') || '{}');
+  let completed = JSON.parse(localStorage.getItem('completed-levels') || '{}');
+  let skipped = JSON.parse(localStorage.getItem('skipped-levels') || '{}');
 
-  for (let key in progress) {
-    if (progress.hasOwnProperty(key) && progress[key] == true) {
+  for (let key in visible) {
+    if (completed[key] == true) {
+      $(`#skipped-${ key }`).css('display', 'none');
       $(`#completed-${ key }`).css('display', 'inline-flex');
+    } else if(skipped[key] == true) {
+      $(`#skipped-${ key }`).css('display', 'inline-flex');
+      $(`#completed-${ key }`).css('display', 'none');
+    } else {
+      $(`#skipped-${ key }`).css('display', 'none');
+      $(`#completed-${ key }`).css('display', 'none');
     }
   }
 };
@@ -18,11 +27,26 @@ const show_playable_levels = () => {
   }
 };
 
-const complete_level = (id, name, next) => {
+const complete_level = (id, name, next, skipped = false) => {
   // Update the completed levels with 'true'
-  let progress = JSON.parse(localStorage.getItem('completed-levels') || '{}');
-  progress[id] = true;
-  localStorage.setItem('completed-levels', JSON.stringify(progress));
+
+  if(skipped) {
+    let progress = JSON.parse(localStorage.getItem('skipped-levels') || '{}');
+    progress[id] = true;
+    localStorage.setItem('skipped-levels', JSON.stringify(progress));
+
+    if(name) {
+      toastr.info(`Skipped level: ${ name }`);
+    }
+  } else {
+    let progress = JSON.parse(localStorage.getItem('completed-levels') || '{}');
+    progress[id] = true;
+    localStorage.setItem('completed-levels', JSON.stringify(progress));
+
+    if(name) {
+      toastr.success(`Completed level: ${ name }`);
+    }
+  }
 
   // Update the visible levels with the next one
   if(next) {
@@ -31,9 +55,6 @@ const complete_level = (id, name, next) => {
     localStorage.setItem('visible-levels', JSON.stringify(visible));
   }
 
-  if(name) {
-    toastr.success(`Completed level: ${ name }`);
-  }
   highlight_completed_levels();
   show_playable_levels();
 
@@ -92,10 +113,7 @@ const level_loaded_main = (level) => {
     $('#skip').show();
     $('#skip').on('click', () => {
       if(confirm("This will unlock the next level without completing this one! You can always go back later. Are you sure?")) {
-        let visible = JSON.parse(localStorage.getItem('visible-levels') || '{}');
-        visible[level['next']] = true
-        localStorage.setItem('visible-levels', JSON.stringify(visible));
-        window.location.href = `/level/${ level['next'] }`;
+        complete_level(level['id'], level['name'], level['next'], true);
       }
     });
   }
@@ -114,6 +132,12 @@ const level_loaded_main = (level) => {
       document.location = `/level/${ level['previous'] }`;
     });
   }
+
+  // Highlight completed levels
+  highlight_completed_levels();
+
+  // Show the levels they can work on
+  show_playable_levels();
 
   //document.getElementById("nextPage").addEventListener("click", function() {
   //  document.location = '/level/<%= level['next'] %>';
@@ -138,18 +162,13 @@ $(document).ready(() => {
       });
   }
 
-  // Highlight completed levels
-  highlight_completed_levels();
-
   // Make the clear button work
   $('#clear').on('click', () => {
     if(confirm("Are you sure you want to clear your progress?")) {
       localStorage.removeItem('visible-levels');
       localStorage.removeItem('completed-levels');
+      localStorage.removeItem('skipped-levels');
       window.location.href = '/';
     }
   });
-
-  // Show the levels they can work on
-  show_playable_levels();
 });
