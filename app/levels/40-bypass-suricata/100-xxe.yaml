@@ -2,6 +2,9 @@ name: 'XML eXternal Entities (XXE)'
 type: 'exploit'
 
 text: |-
+  Time to bypass the rule(s) below! You're on your own now, but feel free to
+  ask questions!
+
   **Goal: Print /etc/passwd**
 
 hints: []
@@ -39,6 +42,7 @@ base_request: |-
   ------WebKitFormBoundarybBYvkB2ohiOQdWxB--
 
 rules:
-- 'alert http any any -> any any (msg:"%%ID%%"; flow:to_server,established; http.method; content:"GET"; http.uri.raw; content:".."; sid:1030005; rev:1;)'
+- >
+  alert http any any -> any any (msg:"Gotcha!"; flow:to_server,established; http.header; content: "WebKitFormBoundary"; http.request_body; content: "<?xml"; content: "<!ENTITY xxe"; sid:123456; rev:1;)
 
 expected_output: "root:"

@@ -37,3 +37,7 @@ innocent_requests:
   - |-
     GET /picture.php?file=uploads/dragon1.jpg HTTP/1.1
     Host: localhost
+
+  - |-
+    GET /some-other-endpoint.php?file=this/../is/../allowed HTTP/1.1
+    Host: localhost

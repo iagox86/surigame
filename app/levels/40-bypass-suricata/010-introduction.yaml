@@ -1,6 +1,6 @@
 name: 'Introduction'
 type: 'text'
-divider_before: 'Exploitation'
+divider_before: 'Bypass Suricata'
 
 text: |-
   All right, hopefully you've learned enough exploitation and Suricata to have

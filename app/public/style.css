@@ -36,7 +36,7 @@ body {
   top: 0;
   left: 0;
   height: 100vh; /* Full height of the viewport */
-  width: 250px; /* Adjust width as needed */
+  width: 300px; /* Adjust width as needed */
   background-color: #162239; /* Darker background for textarea */
   border-right: 3px solid black;
   display: flex;
@@ -63,7 +63,7 @@ body {
 
 /* Adjust main content to account for the fixed sidebar */
 .main-content {
-  margin-left: 250px; /* Match the width of the sidebar */
+  margin-left: 300px; /* Match the width of the sidebar */
   padding-top: 20px; /* Optional padding */
 }
 

@@ -1,0 +1,11 @@
+name: 'The End'
+type: 'text'
+divider_before: 'The End'
+
+text: |-
+  That's it, you've finished everything! Congratulations!
+
+  I'd love to hear about any creative solutions you've had to problems! If you
+  think you found a clever way to bypass a rule, please drop me a line!
+
+  ron@greynoise.io

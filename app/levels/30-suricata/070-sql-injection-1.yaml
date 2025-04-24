@@ -24,7 +24,7 @@ evil_requests:
     Content-Length: 18
     Content-Type: application/x-www-form-urlencoded
 
-    passphrase='or''='
+    passphrase=abc'or''='
 
 innocent_requests:
   - |-

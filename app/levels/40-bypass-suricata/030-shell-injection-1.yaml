@@ -2,6 +2,9 @@ name: 'Shell Injection (Param)'
 type: 'exploit'
 
 text: |-
+  Time to bypass the rule(s) below! You're on your own now, but feel free to
+  ask questions!
+
   **Goal: Print (`cat`) the file `/app/dragon-detector-ai`**.
 
 hints: []
@@ -23,6 +26,7 @@ base_request: |-
   ip=1.2.3.4; cat /app/dragon-detector-ai
 
 rules:
-- 'alert http any any -> any any (msg:"Gotcha!"; flow:to_server,established; http.method; content:"GET"; http.uri.raw; content:".."; sid:1030005; rev:1;)'
+- >
+  alert http any any -> any any (msg:"Gotcha!"; flow:to_server,established; http.uri; content: "detect-dragon.php"; http.request_body; pcre: "/[\;\|`]/"; sid:123456; rev:1;)
 
 expected_output: "This doesn't actually do anything"

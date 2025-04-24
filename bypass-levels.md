@@ -9,9 +9,9 @@
     ip=1.2.3.4;cat /app/dragon-detector-ai
 ```
 
-1. Missed injection symbol (`&`)
-2. urldecode
-3. GET vs POST arguments
+* Missed injection symbol (`&`)
+* urldecode
+* GET vs POST arguments
 
 # Path Traversal 1 (url)
 
@@ -20,8 +20,8 @@
     Host: localhost
 ```
 
-1. Path normalization (`/./`, `//`, etc)
-2. HTML encoding
+* Path normalization (`/./`, `//`, etc)
+* HTML encoding
 
 # Default login
 
@@ -31,8 +31,8 @@
     Authorization: basic YWRtaW46YWRtaW4
 ```
 
-1. Normalized headers
-2. Ambiguous base64
+* Normalized headers
+* Ambiguous base64
 
 # Path Traversal 2 (image)
 
@@ -41,8 +41,8 @@
     Host: localhost
 ```
 
-1. GET vs POST
-2. URL encoding
+* GET vs POST
+* URL encoding
 
 # SQL injection 1 (login bypass)
 
@@ -55,8 +55,10 @@
     passphrase='or '1'='1
 ```
 
-1. Matching spaces
-2. Matching a payload
+* Matching spaces
+* Matching a payload
+* Matching `'` right after `=`
+* Newlines
 
 # SQL injection 2 (fetch data)
 
@@ -65,6 +67,8 @@
     Host: localhost
 ```
 
+* Newlines
+* Matching 
 
 
 # Shell injection 2 (JSON)
@@ -84,7 +88,8 @@
     }
 ```
 
-1. JSON newline madness
+* JSON newline madness
+* Rearrange JSON fields to avoid a `,`
 
 
 # XXE
@@ -114,7 +119,7 @@
     ------WebKitFormBoundarybBYvkB2ohiOQdWxB--
 ```
 
-1. Matching WebKitFormBoundary
-2. Matching filename .xml
-3. Matching the XML part
-4. Can I find another way to exploit XXE?
+* Matching WebKitFormBoundary
+* Matching filename .xml
+* Matching the XML part
+* Can I find another way to exploit XXE?

@@ -2,6 +2,9 @@ name: 'Default login'
 type: 'exploit'
 
 text: |-
+  Time to bypass the rule(s) below! You're on your own now, but feel free to
+  ask questions!
+
   **Goal: Log in as admin:admin**
 
 hints: []
@@ -20,6 +23,7 @@ base_request: |-
   Authorization: basic YWRtaW46YWRtaW4
 
 rules:
-- 'alert http any any -> any any (msg:"%%ID%%"; flow:to_server,established; http.method; content:"GET"; http.uri.raw; content:".."; sid:1030005; rev:1;)'
+- >
+  alert http any any -> any any (msg:"Gotcha!"; flow:to_server,established; http.header; content: "Authorization: basic YWRtaW46YWRtaW4"; sid:123456; rev:1;)
 
 expected_output: "Congratulations!"

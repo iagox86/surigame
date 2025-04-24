@@ -3,5 +3,5 @@
 <p>Your goal is to bypass these while still making the exploit work:</p>
 
 <% for rule in level['rules'] %>
-  <pre class="code" id="rule-<%= rule['id'] %>" style="min-height: 0px"><%= rule['rule'] %></pre>
+  <pre class="code" id="rule-<%= rule['id'] %>" style="min-height: 0px"><%= CGI.escapeHTML(rule['rule']) %></pre>
 <% end %>
