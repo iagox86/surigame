@@ -1,4 +1,4 @@
-name: 'Path Traversal (Param)'
+name: 'Path Traversal (Param) 5'
 type: 'exploit'
 
 text: |-
@@ -24,8 +24,8 @@ base_request: |-
 rules:
 # Newline injection maybe?
   - >
-    alert http any any -> any any (msg:"Gotcha!"; flow:to_server,established; http.method; content: "GET"; http.uri; content: "/picture.php"; pcre:"/filename=.*(.|%2e)(.|%2e)(/|%2f)/i\""; sid:123456; rev:1;)
+    alert http any any -> any any (msg:"Gotcha!"; flow:to_server,established; http.method; content: "GET"; http.uri; content: "/picture.php"; pcre:"/filename=.*(.|%2e)(.|%2e)(/|%2f)/i"; sid:123456; rev:1;)
   - >
-    alert http any any -> any any (msg:"Gotcha!"; flow:to_server,established; http.method; content: "GET"; http.uri; content: "/picture.php"; http.uri; pcre:"/.*(.|%2e)(.|%2e)(/|%2f)/i\""; sid:123456; rev:1;)
+    alert http any any -> any any (msg:"Gotcha!"; flow:to_server,established; http.method; content: "GET"; http.uri; content: "/picture.php"; http.uri; pcre:"/.*(.|%2e)(.|%2e)(/|%2f)/i"; sid:123457; rev:1;)
 
 expected_output: "mime_content_type"

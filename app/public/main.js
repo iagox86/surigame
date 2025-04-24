@@ -71,6 +71,23 @@ const complete_level = (id, name, next, skipped = false) => {
   $('#skip').hide();
 };
 
+const unlock_all = () => {
+  $.getJSON('/api/levels/all')
+    .done((levels) => {
+      console.log(levels);
+
+      const as_object = {};
+      for(const level of levels) {
+        as_object[level] = true;
+      }
+
+      localStorage.setItem('visible-levels', JSON.stringify(as_object));
+      localStorage.setItem('skipped-levels', JSON.stringify(as_object));
+      highlight_completed_levels();
+      show_playable_levels();
+    })
+}
+
 const add_result = (text, cls, icon, scroll_target) => {
   const new_div = $('<div class="status">')
   new_div.text(text);

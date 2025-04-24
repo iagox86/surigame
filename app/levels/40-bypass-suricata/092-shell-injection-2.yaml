@@ -1,4 +1,4 @@
-name: 'Shell Injection (JSON)'
+name: 'Shell Injection (JSON) 3'
 type: 'exploit'
 
 text: |-
@@ -34,6 +34,10 @@ rules:
 
 # Newlines
 - >
-  alert http any any -> any any (msg:"Gotcha!"; flow:to_server,established; http.request_body; content: "\"artifact\""; pcre: "/"artifact".*'/"; sid:123456; rev:1;)
+  alert http any any -> any any (msg:"Gotcha!"; flow:to_server,established; http.request_body; content: "\"artifact\""; pcre: "/"gold".*'/"; sid:123456; rev:1;)
+- >
+  alert http any any -> any any (msg:"Gotcha!"; flow:to_server,established; http.request_body; content: "\"artifact\""; pcre: "/"gems".*'/"; sid:123457; rev:1;)
+- >
+  alert http any any -> any any (msg:"Gotcha!"; flow:to_server,established; http.request_body; content: "\"artifact\""; pcre: "/"artifacts".*'/"; sid:123458; rev:1;)
 
 expected_output: "Perform some math"

@@ -1,4 +1,4 @@
-name: 'Shell Injection (JSON)'
+name: 'Shell Injection (JSON) 2'
 type: 'exploit'
 
 text: |-
@@ -34,6 +34,6 @@ rules:
 
 # whitespace
 - >
-  alert http any any -> any any (msg:"Gotcha!"; flow:to_server,established; http.request_body; content: "\"artifact\":"; content: "'"; sid:123456; rev:1;)
+  alert http any any -> any any (msg:"Gotcha!"; flow:to_server,established; http.request_body; content: "\"artifact\","; content: "'"; sid:123456; rev:1;)
 
 expected_output: "Perform some math"

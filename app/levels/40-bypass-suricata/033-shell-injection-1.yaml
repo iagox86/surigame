@@ -1,4 +1,4 @@
-name: 'Shell Injection (Param) 1'
+name: 'Shell Injection (Param) 4'
 type: 'exploit'
 
 text: |-
@@ -26,8 +26,10 @@ base_request: |-
   ip=1.2.3.4; cat /app/dragon-detector-ai
 
 rules:
-# Only check POST
+# Don't use cat
 - >
-  alert http any any -> any any (msg:"Gotcha!"; flow:to_server,established; http.uri; content: "detect-dragon.php"; http.request_body; pcre: "/ip=[^&]*[\;|&`$()]/"; sid:123457; rev:1;)
+  alert http any any -> any any (msg:"Gotcha!"; flow:to_server,established; http.uri; content: "detect-dragon.php"; content: "cat"; sid:123456; rev:1;)
+- >
+  alert http any any -> any any (msg:"Gotcha!"; flow:to_server,established; http.uri; content: "detect-dragon.php"; http.request_body; content: "cat"; sid:123457; rev:1;)
 
 expected_output: "This doesn't actually do anything"

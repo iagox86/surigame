@@ -1,4 +1,4 @@
-name: 'XML eXternal Entities (XXE)'
+name: 'XML eXternal Entities (XXE) 1'
 type: 'exploit'
 
 text: |-
@@ -44,6 +44,6 @@ base_request: |-
 rules:
 # Matching WebKitFormBoundary (free-form)
 - >
-  alert http any any -> any any (msg:"Gotcha!"; flow:to_server,established; http.header; content: "WebKitFormBoundary"; http.request_body; content: "<!ENTITY"; sid:123456; rev:1;)
+  alert http any any -> any any (msg:"Gotcha!"; flow:to_server,established; http.header; content: "WebKitFormBoundary"; sid:123456; rev:1;)
 
 expected_output: "root:"

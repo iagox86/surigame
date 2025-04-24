@@ -1,4 +1,4 @@
-name: 'SQL Injection (Search) 2'
+name: 'SQL Injection (Search) 3'
 type: 'exploit'
 
 text: |-
@@ -22,8 +22,8 @@ base_request: |-
   Host: localhost
 
 rules:
-# avoid )
+# Avoid space
 - >
-  alert http any any -> any any (msg:"Gotcha!"; flow:to_server,established; http.uri; content: "search="; content: ")"; sid:123456; rev:1;)
+  alert http any any -> any any (msg:"Gotcha!"; flow:to_server,established; http.uri; url_decode; content: "search="; content: " "; sid:123456; rev:1;)
 
 expected_output: "Flaggy flag"

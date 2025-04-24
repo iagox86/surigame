@@ -21,6 +21,8 @@ require_relative('./suricata')
 GAME_NAME = 'SuriGame'
 GAME_LOGO = '/greynoise.jpg'
 
+DEBUG = ENV['DEBUG'] == 'true'
+
 # These are what get returned to the user by default
 PUBLIC_FIELDS = %w[
   id
@@ -67,7 +69,7 @@ LEVELS = ::Dir.glob(::File.join(__dir__, 'levels', '**', '*.yaml')).sort.map do 
     raise "Duplicate ID: #{ id }"
   end
 
-  { 'id' => id }.merge(::YAML.load_file(config))
+  { 'id' => id, 'filename' => config }.merge(::YAML.load_file(config))
 end.map do |level|
   # Give the Suricata rules a consistent ID
   level['rules'] = level['rules']&.each_with_index&.map do |rule, i|
@@ -96,25 +98,17 @@ end.map do |level|
   level
 end
 
-# Add the next/previous levels
-0.upto(LEVELS.length - 2) do |i|
-  LEVELS[i + 1]['previous'] = LEVELS[i]['id']
-  LEVELS[i]['next'] = LEVELS[i + 1]['id']
-end
+def does_request_match(request, rules)
+  # Don't bother with empty rulesets
+  if rules == []
+    return {}
+  end
 
-LEVELS_BY_ID = LEVELS.map { |l| [l['id'], l] }.to_h
-
-def unlocked_levels
-  return LEVELS.map { |l| l.slice(*PUBLIC_FIELDS) }
-end
-
-def get_level(id)
-  return LEVELS_BY_ID[id]&.slice(*PUBLIC_FIELDS)
-end
-
-MARKDOWN = Redcarpet::Markdown.new(Redcarpet::Render::HTML, autolink: true, tables: true, prettify: true, fenced_code_blocks: true)
-def md(text)
-  return MARKDOWN.render(text)
+  Tempfile.create('request.pcap') do |pcap_file|
+    pcap_file.write(FakeCap.fake_http(request))
+    pcap_file.close
+    return run_suricata(pcap_file.to_path, rules, suricata: SURICATA)
+  end
 end
 
 def format_http(http)
@@ -141,11 +135,101 @@ def format_http(http)
   return [headers, body || ''].join("\r\n\r\n")
 end
 
+def try_exploit(level, request, quiet: false)
+  s = nil
+  ::Timeout.timeout(10) do
+    unless quiet
+      LOGGER.info("Connecting to #{ level['target'][PROFILE]['host'] }:#{ level['target'][PROFILE]['port'] }")
+    end
+    s = TCPSocket.new(level['target'][PROFILE]['host'], level['target'][PROFILE]['port'])
+
+    unless quiet
+      LOGGER.info("Sending the request to #{ level['target'][PROFILE]['host'] }:#{ level['target'][PROFILE]['port'] }: #{ request.length } bytes")
+      LOGGER.debug("Request:\n#{ request }")
+    end
+    s.write(request)
+
+    unless quiet
+      LOGGER.info('Reading the response')
+    end
+    response = s.readpartial(8192)
+
+    unless quiet
+      LOGGER.debug("Response:\n#{ response&.split(/\r?\n\r?\n/)&.dig(0) }\n[...]")
+    end
+
+    return (response =~ ::Regexp.new(level['expected_output'])) ? true : false
+  end
+end
+
+# Sanity check our rules
+if DEBUG
+  LOGGER.info 'Testing rules...'
+  bad = false
+  LEVELS.each do |level|
+    puts "Testing #{ level['id'] }..."
+
+    # Ensure that rules a) have no errors, and b) match the base request
+    if level['rules'] && level['rules'].length > 0
+      # Run the Suricata rules against the base request
+      result = does_request_match(format_http(level['base_request']), level['rules'].map { |rule| rule['rule'] })
+
+      # Errors?
+      if result[:errors] && result[:errors].length > 0
+        LOGGER.fatal "Error in rule from #{ level['filename'] }:"
+
+        result[:errors].each do |error|
+          puts "* #{ error }"
+        end
+        exit
+      end
+
+      # Does it match?
+      unless result[:results] && result[:results].length > 0
+        LOGGER.fatal "Rules don't match base request @ #{ level['filename'] }:"
+        puts level['rules'].map { |rule| rule['rule'] }.join("\n")
+        exit
+      end
+
+      # Make sure the base exploit works
+      unless try_exploit(level, format_http(level['base_request']), quiet: true)
+        LOGGER.fatal "Base exploit doesn't work @ #{ level['filename'] }:"
+        exit
+      end
+
+    end
+  end
+
+  LOGGER.info 'Rules look good!'
+end
+
+# Add the next/previous levels
+0.upto(LEVELS.length - 2) do |i|
+  LEVELS[i + 1]['previous'] = LEVELS[i]['id']
+  LEVELS[i]['next'] = LEVELS[i + 1]['id']
+end
+
+LEVELS_BY_ID = LEVELS.map { |l| [l['id'], l] }.to_h
+
+def unlocked_levels
+  return LEVELS.map { |l| l.slice(*PUBLIC_FIELDS) }
+end
+
+def get_level(id)
+  return LEVELS_BY_ID[id]&.slice(*PUBLIC_FIELDS)
+end
+
+MARKDOWN = Redcarpet::Markdown.new(Redcarpet::Render::HTML, autolink: true, tables: true, prettify: true, fenced_code_blocks: true)
+def md(text)
+  return MARKDOWN.render(text)
+end
+
 get '/' do
   erb(
     :index,
     locals: {
-      levels: unlocked_levels
+      levels: unlocked_levels,
+      debug: DEBUG,
     }
   )
 end
@@ -153,13 +237,13 @@ end
 get '/level/:id' do
   level = get_level(@params[:id])
 
-  pp level
   if level
     erb(
       :"levels/#{ level['type'] }",
       locals: {
         levels: unlocked_levels,
         level: level,
+        debug: DEBUG,
       }
     )
   else
@@ -168,6 +252,7 @@ get '/level/:id' do
       locals: {
         levels: unlocked_levels,
         error: 'No such level!',
+        debug: DEBUG,
       }
     )
   end
@@ -200,6 +285,15 @@ before do
   end
 end
 
+get '/api/levels/all' do
+  puts 'HI'
+  if DEBUG
+    return 200, LEVEL_IDS.to_a.to_json
+  else
+    return 200, [].to_json
+  end
+end
+
 get '/api/levels/:id' do
   level = get_level(@params[:id])
 
@@ -208,19 +302,6 @@ get '/api/levels/:id' do
   end
 
   return 200, level.to_json
-end
-
-def does_request_match(request, rules)
-  # Don't bother with empty rulesets
-  if rules == []
-    return {}
-  end
-
-  Tempfile.create('request.pcap') do |pcap_file|
-    pcap_file.write(FakeCap.fake_http(request))
-    pcap_file.close
-    return run_suricata(pcap_file.to_path, rules, suricata: SURICATA)
-  end
 end
 
 post '/api/exploit/:id' do
