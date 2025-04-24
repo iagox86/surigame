@@ -25,6 +25,6 @@ base_request: |-
 
 rules:
 - >
-  alert http any any -> any any (msg:"Gotcha!"; flow:to_server,established; http.uri.raw; content: "../"; sid:123456; rev:1;)
+  alert http any any -> any any (msg:"Gotcha!"; flow:to_server,established; http.uri.raw; pcre: "/(.|%2e)(/|%2f)(.|%2e)/i"; sid:123456; rev:1;)
 
 expected_output: "TCPServer.new"

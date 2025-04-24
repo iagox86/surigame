@@ -11,7 +11,7 @@
       $creds_parts = explode(':', $decoded_creds);
 
       if (count($creds_parts) !== 2) {
-        echo "⚠️ Bad base64 or missing ':' in the authentication token!";
+        echo "⚠️ Bad base64 or missing/extra ':' in the authentication token!";
       } else {
         $username = $creds_parts[0];
         $password = $creds_parts[1];

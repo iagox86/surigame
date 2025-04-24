@@ -42,8 +42,8 @@ base_request: |-
   ------WebKitFormBoundarybBYvkB2ohiOQdWxB--
 
 rules:
-# Matching WebKitFormBoundary (free-form)
+# Matching <?xml (optional)
 - >
-  alert http any any -> any any (msg:"Gotcha!"; flow:to_server,established; http.header; content: "WebKitFormBoundary"; http.request_body; content: "<!ENTITY"; sid:123456; rev:1;)
+  alert http any any -> any any (msg:"Gotcha!"; flow:to_server,established; http.request_body; content: "<?xml"; content: "<!ENTITY"; sid:123456; rev:1;)
 
 expected_output: "root:"

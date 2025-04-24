@@ -24,9 +24,8 @@ base_request: |-
   passphrase=' or '1'='1
 
 rules:
-
-# URL encoding
+# ' right after =
 - >
-  alert http any any -> any any (msg:"Gotcha!"; flow:to_server,established; http.request_body; content: "passphrase="; content: "'"; sid:123456; rev:1;)
+  alert http any any -> any any (msg:"Gotcha!"; flow:to_server,established; http.request_body; content: "passphrase='"; sid:123456; rev:1;)
 
 expected_output: "TOP SECRET"

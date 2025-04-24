@@ -26,8 +26,10 @@ base_request: |-
   ip=1.2.3.4; cat /app/dragon-detector-ai
 
 rules:
-# Missing &
+# I think newlines will work
 - >
-  alert http any any -> any any (msg:"Gotcha!"; flow:to_server,established; http.uri; content: "detect-dragon.php"; http.request_body; pcre: "/[\;\|`]/"; sid:123456; rev:1;)
+  alert http any any -> any any (msg:"Gotcha!"; flow:to_server,established; http.uri; content: "detect-dragon.php"; pcre: "/ip=.*[\\;|&`$()]\";/"; sid:123456; rev:1;)
+- >
+  alert http any any -> any any (msg:"Gotcha!"; flow:to_server,established; http.uri; content: "detect-dragon.php"; http.request_body; pcre: "/ip=.*[\\;|&`$()]\";/"; sid:123457; rev:1;)
 
 expected_output: "This doesn't actually do anything"
