@@ -1,0 +1,25 @@
+name: 'Path Traversal (Param) 4'
+type: 'exploit'
+
+text: |-
+  Time to bypass the rule(s) below! You're on your own now, but feel free to
+  ask questions!
+
+  **Goal: Fetch /var/www/html/picture.php**
+
+hints: []
+
+target: sighting
+
+base_request: |-
+  GET /picture.php?file=../../../../../../../var/www/html/picture.php HTTP/1.1
+  Host: localhost
+
+rules:
+# ./. normalization (.//.)
+  - >
+    alert http any any -> any any (msg:"Gotcha!"; flow:to_server,established; http.uri; content: "/picture.php"; content: "../.."; sid:123456; rev:1;)
+  - >
+    alert http any any -> any any (msg:"Gotcha!"; flow:to_server,established; http.uri; content: "/picture.php"; http.request_body; url_decode; content: "../.."; sid:123457; rev:1;)
+
+expected_output: "mime_content_type"

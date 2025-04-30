@@ -20,7 +20,7 @@ base_request: |-
   ip=1.2.3.4; cat /app/dragon-detector-ai
 
 rules:
-# Still lets & work
+# Still lets & work, also no urldecode
 - >
   alert http any any -> any any (msg:"Gotcha!"; flow:to_server,established; http.uri; content: "detect-dragon.php"; pcre: "/ip=[^&]*[\;|&`$()]/"; sid:123456; rev:1;)
 - >

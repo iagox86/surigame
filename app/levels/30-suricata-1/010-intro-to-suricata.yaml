@@ -1,6 +1,6 @@
 name: 'Suricata 101 (Metadata)'
 type: suricata
-divider_before: 'Suricata'
+divider_before: 'Suricata (part 1)'
 
 text: |-
   For this section, we're going to be writing some Suricata rules, so let's learn
@@ -61,7 +61,7 @@ text: |-
 
   We'll use that as the basis for all of our rules!
 
-  **Goal: Write a syntacically valid rule**
+  **Goal: Write a syntactically valid rule**
 
 
 base_rule: ''

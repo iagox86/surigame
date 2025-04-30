@@ -1,6 +1,6 @@
-FROM ruby:3.2.3
+FROM ubuntu:25.04
 
-RUN apt update && apt install -y suricata
+RUN apt update && apt install -y suricata ruby rubygems bundler
 
 RUN mkdir /app
 COPY . /app/
@@ -12,8 +12,8 @@ EXPOSE 1234
 RUN bundle install
 
 # Run as the CTF user
-RUN useradd -r user -u 1000
-USER 1000
+RUN useradd -r user -u 1100
+USER 1100
 
 ENV DEBUG=true
 ENV PROFILE=prod

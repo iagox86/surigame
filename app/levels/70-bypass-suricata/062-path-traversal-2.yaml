@@ -1,4 +1,4 @@
-name: 'Path Traversal (Param) 1'
+name: 'Path Traversal (Param) 2'
 type: 'exploit'
 
 text: |-
@@ -16,8 +16,8 @@ base_request: |-
   Host: localhost
 
 rules:
-# POST body
+# POST
   - >
-    alert http any any -> any any (msg:"Gotcha!"; flow:to_server,established; http.method; content: "GET"; http.uri; content: "/picture.php"; content: "../"; sid:123456; rev:1;)
+    alert http any any -> any any (msg:"Gotcha!"; flow:to_server,established; content: "/picture.php"; content: "../"; sid:123456; rev:1;)
 
 expected_output: "mime_content_type"

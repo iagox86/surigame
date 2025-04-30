@@ -18,6 +18,7 @@ base_request: |-
   Host: localhost
 
 rules:
+# Raw, encoding
 - >
   alert http any any -> any any (msg:"Gotcha!"; flow:to_server,established; http.uri.raw; content: "../"; sid:123456; rev:1;)
 

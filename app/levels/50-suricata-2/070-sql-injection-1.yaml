@@ -1,5 +1,6 @@
 name: 'SQL Injection (Login)'
 type: suricata
+divider_before: 'Suricata (part 2)'
 
 text: |-
   Can you detect our login SQL injection?

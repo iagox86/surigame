@@ -1,4 +1,4 @@
-name: 'Path Traversal (URI) 2'
+name: 'Path Traversal (URI) 3'
 type: 'exploit'
 
 text: |-
@@ -18,7 +18,8 @@ base_request: |-
   Host: localhost
 
 rules:
+# Doesn't handle `.//.`
 - >
-  alert http any any -> any any (msg:"Gotcha!"; flow:to_server,established; http.uri.raw; content: "./."; sid:123456; rev:1;)
+  alert http any any -> any any (msg:"Gotcha!"; flow:to_server,established; http.uri.raw; pcre: "/(.|%2e)(/|%2f)(.|%2e)/i"; sid:123456; rev:1;)
 
 expected_output: "TCPServer.new"

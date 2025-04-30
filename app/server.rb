@@ -198,6 +198,7 @@ if DEBUG
       unless result[:results] && result[:results].length > 0
         LOGGER.fatal "Rules don't match base request @ #{ level['filename'] }:"
         puts level['rules'].map { |rule| rule['rule'] }.join("\n")
+        puts level['base_request']
         exit
       end
 

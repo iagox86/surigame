@@ -6,7 +6,7 @@ text: |-
 
   There are two very different ways to solve this:
 
-  1. Match the exact base64 string `YWRtaW46YWRtaW4`
+  1. Match the exact base64 string `YWRtaW46YWRtaW4=`
   2. Use `base64_decode` - [docs](https://docs.suricata.io/en/latest/rules/base64-keywords.html#base64-decode)
 
   You're welcome to do it other ways, but the first method is actually unsafe, and we'll see why later!
@@ -18,7 +18,7 @@ evil_requests:
   - |-
     GET /avert-disaster.php HTTP/1.1
     Host: localhost
-    Authorization: basic YWRtaW46YWRtaW4
+    Authorization: basic YWRtaW46YWRtaW4=
 
 innocent_requests:
   - |-
@@ -28,4 +28,4 @@ innocent_requests:
   - |-
     GET /avert-disaster.php HTTP/1.1
     Host: localhost
-    Authorization: dXNlcjpwYXNzd29yZA==
+    Authorization: basic dXNlcjpwYXNzd29yZA==

@@ -1,5 +1,6 @@
 name: 'SQL Injection (Search) 1'
 type: 'exploit'
+divider_before: 'Bypass Suricata (part 3)'
 
 text: |-
   Time to bypass the rule(s) below! You're on your own now, but feel free to
