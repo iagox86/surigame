@@ -175,7 +175,6 @@ end
 # Sanity check our rules
 if DEBUG
   LOGGER.info 'Testing rules...'
-  bad = false
   LEVELS.each do |level|
     puts "Testing #{ level['id'] }..."
 
