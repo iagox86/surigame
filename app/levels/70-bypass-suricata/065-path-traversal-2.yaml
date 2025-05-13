@@ -15,11 +15,21 @@ base_request: |-
   GET /picture.php?file=../../../../../../../var/www/html/picture.php HTTP/1.1
   Host: localhost
 
+solution: |-
+  POST /picture.php? HTTP/1.1
+  Host: localhost
+  Content-Length: 83
+  Content-Type: application/x-www-form-urlencoded
+
+  file=%2E%2E%2F%2E%2E%2F%2E%2E%2F%2E%2E%2F%2E%2E%2F%2E%2E%2F%2E%2E%2Fvar/www/html/picture.php
+
+solution_note: Case on the %2e%2f stuff
+
 rules:
 # Case
   - >
     alert http any any -> any any (msg:"Gotcha!"; flow:to_server,established; http.uri; content: "/picture.php"; pcre:"/file=[^&]*(\.|%2e)(\.|%2e)(/|%2f)/"; sid:123456; rev:1;)
   - >
-    alert http any any -> any any (msg:"Gotcha!"; flow:to_server,established; http.uri; content: "/picture.php"; http.request_body; url_decode; pcre: "/file=[^&]*(\.|%2e)(\.|%2e)(\/|%2f)/"; sid:123457; rev:1;)
+    alert http any any -> any any (msg:"Gotcha!"; flow:to_server,established; http.uri; content: "/picture.php"; http.request_body; pcre: "/file=[^&]*(\.|%2e)(\.|%2e)(\/|%2f)/"; sid:123457; rev:1;)
 
 expected_output: "mime_content_type"

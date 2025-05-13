@@ -12,8 +12,22 @@ hints: []
 target: sighting
 
 base_request: |-
-  GET /picture.php?file=../../../../../../../var/www/html/picture.php HTTP/1.1
+  POST /picture.php? HTTP/1.1
   Host: localhost
+  Content-Length: 50
+  Content-Type: application/x-www-form-urlencoded
+
+  file=../../../../../../../var/www/html/picture.php
+
+solution: |-
+  POST /picture.php? HTTP/1.1
+  Host: localhost
+  Content-Length: 83
+  Content-Type: application/x-www-form-urlencoded
+
+  file=%2e%2e%2f%2e%2e%2f%2e%2e%2f%2e%2e%2f%2e%2e%2f%2e%2e%2fvar/www/html/picture.php
+
+solution_note: Missing url_decode
 
 rules:
 # POST w/o URLDecode

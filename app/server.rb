@@ -46,6 +46,8 @@ LOGGER = ::SingLogger.instance()
 # Ideally, we set all these in the Dockerfile
 set :bind, ENV['HOST'] || '0.0.0.0'
 set :port, ENV['PORT'] || '1234'
+set :host_authorization, { permitted_hosts: [] }
+
 # set :logging, Logger::DEBUG
 
 PROFILE = ENV['PROFILE'] || 'dev'
@@ -115,6 +117,13 @@ def does_request_match(request, rules)
     return {}
   end
 
+  rules.each do |rule|
+    unless rule.is_a?(String)
+      pp rules
+      raise "Rules isn't an array of strings!"
+    end
+  end
+
   Tempfile.create('request.pcap') do |pcap_file|
     pcap_file.write(FakeCap.fake_http(request))
     pcap_file.close
@@ -173,8 +182,7 @@ def try_exploit(level, request, quiet: false)
   end
 end
 
-# Sanity check our rules
-if DEBUG
+def self_test()
   LOGGER.info 'Testing rules...'
   LEVELS.each do |level|
     puts "Testing #{ level['id'] }..."
@@ -207,11 +215,42 @@ if DEBUG
         LOGGER.fatal "Base exploit doesn't work @ #{ level['filename'] }:"
         exit
       end
+    end
 
+    # Test solutions
+    if level['type'] == 'exploit' || level['type'] == 'suricata'
+      if level['solution'].nil?
+        LOGGER.fatal "No solution for #{ level['id'] }"
+        exit
+      end
+
+      if level['type'] == 'exploit'
+        caught = does_request_match(level['solution'], level['rules']&.map { |rule| rule['rule'] } || [])[:results]
+
+        unless caught.nil? || caught.empty?
+          LOGGER.fatal "Solution is caught by a rule @ #{ level['filename'] }"
+          puts 'Rules:'
+          pp level['rules']
+          puts
+          puts 'Solution:'
+          pp level['solution']
+          exit
+        end
+
+        unless try_exploit(level, format_http(level['solution']), quiet: true)
+          LOGGER.fatal "Solution doesn't work @ #{ level['filename'] }"
+          exit
+        end
+      end
     end
   end
 
   LOGGER.info 'Rules look good!'
+end
+
+# Sanity check our rules
+if DEBUG
+  self_test()
 end
 
 # Add the next/previous levels
@@ -454,4 +493,29 @@ post '/api/suricata/:id' do
     puts e.backtrace
     return 500, { 'error' => "Error testing rule: #{ e }" }.to_json
   end
+end
+
+get '/secret/self_test' do
+  self_test()
+end
+
+get '/secret/summary' do
+  out = []
+  LEVELS.each do |level|
+    if level['divider_before']
+      out << "<h1>#{ level['divider_before'] }</h1>"
+    end
+    out << "<h2>#{ level['name'] }</h2>"
+    out << "<a href=\"/level/#{ level['id'] }\">/level/#{ level['id'] }</a>"
+
+    if level['solution_note']
+      out << "Solution summary: #{ level['solution_note'] }"
+    end
+
+    if level['solution']
+      out << "<pre>#{ CGI.escapeHTML(level['solution']) }</pre>"
+    end
+  end
+
+  return 200, out.join("<br>\n")
 end

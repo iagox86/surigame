@@ -26,6 +26,12 @@ base_request: |-
   GET /?search=nebula')%20or%20'1'='1'-- HTTP/1.1
   Host: localhost
 
+solution: |-
+  GET /?search=nebula')%20or%20'2'='2'-- HTTP/1.1
+  Host: localhost
+
+solution_note: Just used 2=2 again
+
 rules:
 # Lots of problems
 - >

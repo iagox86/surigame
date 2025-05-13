@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         http_response_code(400);
         echo json_encode([
           "status" => "error",
-          "message" => "Fire-scorched parchment detected - invalid submission"
+          "message" => "Fire-scorched parchment detected - invalid submission (hoardType)"
         ]);
         exit(1);
       }
@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       http_response_code(400);
       echo json_encode([
         "status" => "error",
-        "message" => "Fire-scorched parchment detected - invalid submission"
+        "message" => "Fire-scorched parchment detected - invalid submission (JSON)"
       ]);
   }
 } else {

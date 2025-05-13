@@ -34,6 +34,13 @@ base_request: |-
   Host: localhost
   Authorization: basic YWRtaW46YWRtaW4=
 
+solution: |-
+  GET /avert-disaster.php HTTP/1.1
+  Host: localhost
+  Authorization: basic YWRtaW46YWRtaW5
+
+solution_note: Ambiguous base64
+
 rules:
 # Lots of problems
 - >

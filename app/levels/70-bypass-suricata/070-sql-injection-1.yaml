@@ -17,6 +17,16 @@ base_request: |-
 
   passphrase=' or '1'='1
 
+solution: |-
+  POST / HTTP/1.1
+  Host: localhost
+  Content-Length: 30
+  Content-Type: application/x-www-form-urlencoded
+
+  passphrase=%27 or %271%27=%271
+
+solution_note: URL Encoding
+
 rules:
 
 # URL encoding

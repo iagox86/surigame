@@ -64,8 +64,8 @@ const complete_level = (id, name, next, skipped = false) => {
     localStorage.setItem('visible-levels', JSON.stringify(visible));
 
     // Enable the next button
-    $('#nextPage').removeClass('disabled');
-    $('#nextPage').on('click', () => {
+    $('.nextPage').removeClass('disabled');
+    $('.nextPage').on('click', () => {
       document.location = `/level/${ next }`;
     });
   }
@@ -152,15 +152,15 @@ const level_loaded_main = (level) => {
 
   // Enable the next/prev buttons
   if(level['next'] && visible[level['next']]) {
-    $('#nextPage').removeClass('disabled');
-    $('#nextPage').on('click', () => {
+    $('.nextPage').removeClass('disabled');
+    $('.nextPage').on('click', () => {
       document.location = `/level/${ level['next'] }`;
     });
   }
 
   if(level['previous'] && visible[level['previous']]) {
-    $('#previousPage').removeClass('disabled');
-    $('#previousPage').on('click', () => {
+    $('.previousPage').removeClass('disabled');
+    $('.previousPage').on('click', () => {
       document.location = `/level/${ level['previous'] }`;
     });
   }

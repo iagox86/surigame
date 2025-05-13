@@ -15,9 +15,15 @@ base_request: |-
   GET /?search=nebula')%20or%20'1'='1'-- HTTP/1.1
   Host: localhost
 
+solution: |-
+  GET /?search=nebula')or'1'='1'-- HTTP/1.1
+  Host: localhost
+
+solution_note: Just remove spaces
+
 rules:
-# avoid )
+# Avoid space
 - >
-  alert http any any -> any any (msg:"Gotcha!"; flow:to_server,established; http.uri; content: "search="; content: ")"; sid:123456; rev:1;)
+  alert http any any -> any any (msg:"Gotcha!"; flow:to_server,established; http.uri; content: "search="; content: " "; sid:123456; rev:1;)
 
 expected_output: "Flaggy flag"

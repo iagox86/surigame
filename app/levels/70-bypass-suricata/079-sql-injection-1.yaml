@@ -34,6 +34,16 @@ base_request: |-
 
   passphrase=' or '1'='1
 
+solution: |-
+  POST / HTTP/1.1
+  Host: localhost
+  Content-Length: 22
+  Content-Type: application/x-www-form-urlencoded
+
+  passphrase=' or '2'='2
+
+solution_note: Changed 1=1 to 2=2
+
 rules:
 # Lots of problems
 - >

