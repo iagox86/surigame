@@ -17,6 +17,8 @@ tmux
 docker compose build && docker compose up
 ```
 
+That should listen on http://localhost:31338
+
 ## Troubleshooting
 
 This is a version error - use `docker compose` instead of `docker-compose`:
