@@ -1,0 +1,11 @@
+<div id="result">
+  <h2 id="result-error" style="display: none">Result: <span style="color: red">ERROR</span></h2>
+  <h2 id="result-match" style="display: none">Result: <span style="color: green">MATCHED</span></h2>
+  <h2 id="result-miss" style="display: none">Result: <span style="color: red">MISSED</span></h2>
+
+  <div id="results-list">
+  </div>
+
+  <%= erb :'partials/navigation', :locals => { level: level } %>
+</div>
+

@@ -1,0 +1,24 @@
+name: 'JSON payload'
+type: 'demo'
+divider_before: 'JSON'
+
+text: |-
+  This is a typical JSON exploit (also *CVE-2023-30013*)
+
+base_rule: |-
+  alert http any any -> any any ( \
+    msg:"demo"; \
+    http.uri; content: "/cgi-bin/cstecgi.cgi"; \
+    http.request_body; \
+      content: "\"command\":"; \
+      content: "\"topicurl\":\"setTracerouteCfg\""; distance: 0; \
+    sid:123456; \
+    rev:1; \
+  )
+
+base_request: |-
+  POST /cgi-bin/cstecgi.cgi HTTP/1.1
+  Host: GNhostname
+  Content-Length: 89
+  
+  {"command":"127.0.0.1; ls>../GNrandomstring;#","num":"230","topicurl":"setTracerouteCfg"}

@@ -1,0 +1,24 @@
+name: 'Complex + ENCODED paths!'
+type: 'demo'
+
+text: |-
+  `http.uri.raw` doesn't match encoded characters by default!
+
+  * Goal: decode the URI with `url_decode`
+
+base_rule: |-
+  alert http any any -> any any ( \
+    msg:"demo"; \
+    http.uri.raw; \
+      content: "resources"; \
+      content: "//"; \
+      content: ".."; \
+    sid:123456; \
+    rev:1; \
+  )
+
+base_request: |-
+  GET /%72esourc%65s//../WEB-INF/web.xml HTTP/1.1
+  Host: 127.0.0.1
+  User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0) Gecko/20100101 Firefox/102.0
+  Connection: close

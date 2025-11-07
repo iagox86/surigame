@@ -1,0 +1,19 @@
+name: 'Intro: non-match'
+type: 'demo'
+should_match: false
+
+text: |-
+  Failto match a URL
+
+base_rule: |-
+  alert http any any -> any any ( \
+    msg:"demo"; \
+    http.uri; content: "notbackdoor.php"; \
+    sid:1031340; \
+    rev:1; \
+  )
+
+base_request: |-
+  GET /backdoor.php?arg1=val1&cmd=whoami HTTP/1.1
+  Cookie: abc=123
+  Host: example.org

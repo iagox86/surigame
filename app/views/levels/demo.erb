@@ -1,0 +1,24 @@
+<%= erb :'partials/header', :locals => { title: level['name'] } %>
+<body>
+  <div class="container-fluid">
+    <%= erb :'partials/sidebar', :locals => { levels: levels } %>
+
+    <div class="main-content">
+      <%= erb :'partials/level-header', :locals => { level: level } %>
+
+      <%= erb :'components/text-description-show', :locals => { level: level } %>
+
+      <div class="row">
+        <div class="col-md-12">
+          <%= erb :'components/exploit-edit', :locals => { level: level } %>
+          <%= erb :'components/rule-edit', :locals => { level: level } %>
+          <%= erb :'components/result-show', :locals => { level: level } %>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <%= erb :'partials/scripts' %>
+  <script src="/demo.js"></script>
+</body>
+</html>

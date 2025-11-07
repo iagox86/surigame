@@ -1,0 +1,31 @@
+name: 'JSON newlines'
+type: 'demo'
+
+text: |-
+  Ensure you're handling newlines in JSON data!
+
+  * Goal: Fix this rule to handle newlines correctly
+
+base_rule: |-
+  alert http any any -> any any ( \
+    msg:"demo"; \
+    http.uri; content: "/cgi-bin/cstecgi.cgi"; \
+    http.request_body; \
+      content: "\"command\""; \
+      content: "\"topicurl\""; content: "\"setTracerouteCfg\""; \
+      pcre: "/\"topicurl\".*:.*\"setTracerouteCfg\"/"; \
+    sid:123456; \
+    rev:1; \
+  )
+
+base_request: |-
+  POST /cgi-bin/cstecgi.cgi HTTP/1.1
+  Host: GNhostname
+  Content-Length: 89
+  
+  {
+    "topicurl":
+    "setTracerouteCfg",                   "command":
+    "127.0.0.1; ls>../GNrandomstring;#",  "num":
+    "230"
+  }

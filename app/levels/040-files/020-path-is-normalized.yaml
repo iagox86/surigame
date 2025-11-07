@@ -1,0 +1,17 @@
+name: 'Auto-normalized paths'
+type: 'demo'
+
+text: |-
+  Demonstrating that paths are normalized
+
+base_rule: |-
+  alert http any any -> any any ( \
+    msg:"demo"; \
+    http.uri; content: "/folder/file"; \
+    sid:123456; \
+    rev:1; \
+  )
+
+base_request: |-
+  GET /folder\./..//folder\.\./.\../folder/file HTTP/1.1
+  Host: example.org

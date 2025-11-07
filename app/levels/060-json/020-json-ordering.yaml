@@ -1,0 +1,25 @@
+name: 'JSON payload: ordering'
+type: 'demo'
+
+text: |-
+  Don't assume ordering of JSON entries!
+
+  * Goal: Fix this rule by not assuming an ordering
+
+base_rule: |-
+  alert http any any -> any any ( \
+    msg:"demo"; \
+    http.uri; content: "/cgi-bin/cstecgi.cgi"; \
+    http.request_body; \
+      content: "\"command\":"; \
+      content: "\"topicurl\":\"setTracerouteCfg\""; distance: 0; \
+    sid:123456; \
+    rev:1; \
+  )
+
+base_request: |-
+  POST /cgi-bin/cstecgi.cgi HTTP/1.1
+  Host: GNhostname
+  Content-Length: 89
+  
+  {"topicurl":"setTracerouteCfg", "command":"127.0.0.1; ls>../GNrandomstring;#","num":"230"}

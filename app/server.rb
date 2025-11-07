@@ -336,7 +336,6 @@ before do
 end
 
 get '/api/levels/all' do
-  puts 'HI'
   if DEBUG
     return 200, LEVEL_IDS.to_a.to_json
   else
@@ -427,6 +426,47 @@ post '/api/exploit/:id' do
     return 500, { 'error' => "Error running exploit: #{ e }" }.to_json
   ensure
     s&.close
+  end
+end
+
+post '/api/demo/:id' do
+  level = LEVELS_BY_ID[@params[:id]]
+  if level.nil?
+    return 400, { 'error' => 'Invalid level!' }.to_json
+  end
+
+  if @body['rule'].nil? || @body['rule'].empty?
+    return 400, { 'error' => 'Missing rule!' }.to_json
+  end
+
+  if @body['request'].nil? || @body['request'].empty?
+    return 400, { 'error' => 'Missing rule!' }.to_json
+  end
+
+  result = does_request_match(@body['request'], @body['rule'].split(/\r?\n/))
+
+  unless result[:errors].empty?
+    return 200, {
+      'completed' => false,
+      'result' => 'error',
+      'errors' => result[:errors],
+    }.to_json
+  end
+
+  if level['should_match'].nil?
+    level['should_match'] = true
+  end
+
+  if result[:results].empty?
+    return 200, {
+      'completed' => level['should_match'] == false,
+      'result' => 'miss',
+    }.to_json
+  else
+    return 200, {
+      'completed' => level['should_match'] == true,
+      'result' => 'match',
+    }.to_json
   end
 end
 

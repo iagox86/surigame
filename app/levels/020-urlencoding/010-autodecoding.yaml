@@ -1,0 +1,19 @@
+name: 'Automatic URL decoding'
+type: 'demo'
+divider_before: 'URL decoding'
+
+text: |-
+  %nn gets automatically decoded
+
+base_rule: |-
+  alert http any any -> any any ( \
+    msg:"demo"; \
+    http.uri; content: "backdoor.php"; \
+    sid:123456; \
+    rev:1; \
+  )
+
+base_request: |-
+  GET /backdoor.php?arg1=val1&cmd=%77%68%6f%61%6d%69 HTTP/1.1
+  Cookie: abc=123
+  Host: example.org

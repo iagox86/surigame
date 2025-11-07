@@ -1,0 +1,26 @@
+name: 'Complex paths'
+type: 'demo'
+
+text: |-
+  Paths with `..` or `//` in them aren't matched by default!
+
+  *This is CVE-2022-31268*
+
+  * Goal: Make this match using `http.uri.raw`
+
+base_rule: |-
+  alert http any any -> any any ( \
+    msg:"demo"; \
+    http.uri; \
+      content: "resources"; \
+      content: "//"; \
+      content: ".."; \
+    sid:123456; \
+    rev:1; \
+  )
+
+base_request: |-
+  GET /resources//../WEB-INF/web.xml HTTP/1.1
+  Host: 127.0.0.1
+  User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0) Gecko/20100101 Firefox/102.0
+  Connection: close
