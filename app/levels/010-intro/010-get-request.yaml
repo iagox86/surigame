@@ -1,0 +1,20 @@
+name: 'Intro: HTTP'
+type: 'exploit'
+divider_before: 'HTTP primer'
+
+text: |-
+  This is a sample HTTP request
+
+target: demo
+
+base_request: |-
+  GET /backdoor.php HTTP/1.1
+  Cookie: abc=123
+  Host: example.org
+
+solution: |-
+  GET /backdoor.php HTTP/1.1
+  Cookie: abc=123
+  Host: example.org
+
+expected_output: ""

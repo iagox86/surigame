@@ -1,10 +1,10 @@
 name: 'JSON payload: ordering'
-type: 'demo'
+type: 'suricata'
 
 text: |-
   Don't assume ordering of JSON entries!
 
-  * Goal: Fix this rule by not assuming an ordering
+  * Goal: Fix this rule to be order-agnostic
 
 base_rule: |-
   alert http any any -> any any ( \
@@ -17,9 +17,21 @@ base_rule: |-
     rev:1; \
   )
 
-base_request: |-
-  POST /cgi-bin/cstecgi.cgi HTTP/1.1
-  Host: GNhostname
-  Content-Length: 89
-  
-  {"topicurl":"setTracerouteCfg", "command":"127.0.0.1; ls>../GNrandomstring;#","num":"230"}
+solution: |-
+  alert http any any -> any any ( \
+    msg:"demo"; \
+    http.uri; content: "/cgi-bin/cstecgi.cgi"; \
+    http.request_body; \
+      content: "\"command\":"; \
+      content: "\"topicurl\":\"setTracerouteCfg\""; \
+    sid:123456; \
+    rev:1; \
+  )
+
+evil_requests:
+  - |-
+    POST /cgi-bin/cstecgi.cgi HTTP/1.1
+    Host: GNhostname
+    Content-Length: 89
+    
+    {"topicurl":"setTracerouteCfg", "command":"127.0.0.1; ls>../GNrandomstring;#","num":"230"}

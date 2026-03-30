@@ -509,7 +509,7 @@ post '/api/suricata/:id' do
       end
 
       # Check if any of the good tests match
-      level['innocent_requests'].each do |innocent_request|
+      level['innocent_requests']&.each do |innocent_request|
         # We ignore errors because they should be the same as earlier
         innocent_test = does_request_match(innocent_request['request'], @body['rule'].split(/\r?\n/))
 

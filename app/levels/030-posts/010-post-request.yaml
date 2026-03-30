@@ -1,25 +1,24 @@
-name: 'POST request decoding'
-type: 'demo'
+name: 'Intro: POST'
+type: 'exploit'
 divider_before: 'POST requests'
-should_match: false
 
 text: |-
-  POST request with no special encoding are matched using `http.request_body`
+  This is a sample HTTP request
 
-  * Goal: Can you keep the same payload but encode to bypass filters?
-
-base_rule: |-
-  alert http any any -> any any ( \
-    msg:"demo"; \
-    http.request_body; content: "1.2.3.4"; \
-    sid:123456; \
-    rev:1; \
-  )
+target: demo
 
 base_request: |-
-  POST /detection.php HTTP/1.1
+  POST /backdoor.php HTTP/1.1
+  Cookie: abc=123
   Host: example.org
   Content-Length: 10
   Content-Type: application/x-www-form-urlencoded
-  
-  ip=1.2.3.4
+
+  cmd=whoami
+
+solution: |-
+  GET /backdoor.php HTTP/1.1
+  Cookie: abc=123
+  Host: example.org
+
+expected_output: ""

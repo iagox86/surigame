@@ -1,6 +1,6 @@
 name: 'Normal paths'
 type: 'demo'
-divider_before: 'file paths'
+divider_before: 'File paths'
 
 text: |-
   Matching a standard path

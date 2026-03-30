@@ -1,14 +1,13 @@
-name: 'Intro: non-match'
+name: 'Intro: Suricata'
 type: 'demo'
-should_match: false
 
 text: |-
-  Failto match a URL
+  Match a simple URL: `backdoor.php`
 
 base_rule: |-
   alert http any any -> any any ( \
     msg:"demo"; \
-    http.uri; content: "notbackdoor.php"; \
+    http.uri; content: "backdoor.php"; \
     sid:1031340; \
     rev:1; \
   )

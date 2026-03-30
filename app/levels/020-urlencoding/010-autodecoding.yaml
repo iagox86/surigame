@@ -1,6 +1,5 @@
-name: 'Automatic URL decoding'
+name: 'URL Decoding: Suricata'
 type: 'demo'
-divider_before: 'URL decoding'
 
 text: |-
   %nn gets automatically decoded
@@ -8,7 +7,7 @@ text: |-
 base_rule: |-
   alert http any any -> any any ( \
     msg:"demo"; \
-    http.uri; content: "backdoor.php"; \
+    http.uri; content: "whoami"; \
     sid:123456; \
     rev:1; \
   )

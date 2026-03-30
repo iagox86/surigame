@@ -1,0 +1,17 @@
+name: 'Intro: HTTP query string'
+type: 'exploit'
+
+text: |-
+  This is an HTTP request w/ arguments
+
+target: demo
+
+base_request: |-
+  GET /backdoor.php?arg1=test&arg2=123 HTTP/1.1
+  Host: example.org
+
+solution: |-
+  GET /backdoor.php?arg1=test&arg2=123 HTTP/1.1
+  Host: example.org
+
+expected_output: ""
